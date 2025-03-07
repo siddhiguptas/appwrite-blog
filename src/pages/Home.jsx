@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Button } from "../Components";
+import { Container, Button } from "../components";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/utils/cn";
