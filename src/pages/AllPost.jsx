@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, PostCard, Button, Loader } from "../Components";
+import { Container, PostCard, Button, Loader } from "../components";
 import appwriteService from "../appwrite/config";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
