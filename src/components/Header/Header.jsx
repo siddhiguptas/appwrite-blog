@@ -1,79 +1,111 @@
-import React from 'react'
-import {Container, Logo, LogoutButton} from '../index'
-import { Link } from 'react-router-dom'
-import {useSelector} from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import React, { useState } from "react";
+import { LogoutBtn, Container, Logo, Button } from "../index";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import hamburgerIcon from "/icon-hamburger.svg";
+import closeIcon from "/icon-close.svg";
+import "./Header.css";
 
 function Header() {
-  const authStatus = useSelector((state) => state.auth.status)
-  const navigate = useNavigate()
+  const authStatus = useSelector((state) => state.auth.status);
+  const [navOpen, setNavOpen] = useState(false);
+
+  const closeNavbar = () => setNavOpen(false);
+  const toggleNavbar = () => setNavOpen(!navOpen);
 
   const navItems = [
     {
-      name: 'Home',
+      name: "Home",
       slug: "/",
-      active: true
-    }, 
+      active: true,
+    },
     {
       name: "Login",
       slug: "/login",
       active: !authStatus,
-  },
-  {
-      name: "Signup",
-      slug: "/signup",
-      active: !authStatus,
-  },
-  {
+    },
+    {
       name: "All Posts",
       slug: "/all-posts",
       active: authStatus,
-  },
-  {
+    },
+    {
       name: "Add Post",
       slug: "/add-post",
       active: authStatus,
-  },
-  ]
-
+    },
+  ];
 
   return (
-    <header className='py-3 shadow bg-gray-500'>
+    <header className="fixed top-0 left-0 right-0 z-50 bg-customGray/80 backdrop-blur-md border-b border-white/10">
       <Container>
-        <nav className='flex'>
-          <div className='mr-4'>
-            <Link to='/'>
-              <Logo width='70px'   />
-
-              </Link>
+        <nav className="flex items-center justify-between h-16 px-4">
+          <div className="flex-shrink-0">
+            <Link to="/" onClick={closeNavbar}>
+              <Logo />
+            </Link>
           </div>
-          <ul className='flex ml-auto'>
-            {navItems.map((item) => 
-            item.active ? (
-              <li key={item.name}>
-                <button
-  onClick={() => {
-    console.log(`Navigating to: ${item.slug}`);  // Debugging
-    navigate(item.slug);
-  }}
-  className='inline-block px-6 py-2 duration-200 hover:bg-blue-100 rounded-full'
->
-  {item.name}
-</button>
 
-              </li>
-            ) : null
+          <div className="md:hidden">
+            <button
+              onClick={toggleNavbar}
+              className="p-2 text-gray-400 hover:text-white transition-colors"
+            >
+              <img
+                src={navOpen ? closeIcon : hamburgerIcon}
+                alt=""
+                className="w-6 h-6"
+              />
+            </button>
+          </div>
+
+          <ul
+            className={`md:flex md:items-center md:space-x-4 ${
+              navOpen
+                ? "absolute top-16 left-0 right-0 flex flex-col items-center space-y-4 py-4 bg-customGray/95 backdrop-blur-md border-b border-white/10"
+                : "hidden md:flex"
+            }`}
+          >
+            {navItems.map(
+              (item) =>
+                item.active && (
+                  <li key={item.name}>
+                    <NavLink
+                      onClick={closeNavbar}
+                      to={item.slug}
+                      className={({ isActive }) =>
+                        `px-4 py-2 text-sm font-medium transition-colors ${
+                          isActive
+                            ? "text-customBlue"
+                            : "text-gray-400 hover:text-white"
+                        }`
+                      }
+                    >
+                      {item.name}
+                    </NavLink>
+                  </li>
+                )
             )}
-            {authStatus && (
+            {authStatus ? (
+              <li onClick={closeNavbar}>
+                <LogoutBtn />
+              </li>
+            ) : (
               <li>
-                <LogoutButton />
+                <NavLink
+                  onClick={closeNavbar}
+                  to="/signup"
+                  className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-cyan-400 to-blue-600 rounded-lg hover:from-cyan-500 hover:to-blue-700 transition-all duration-200 hover:scale-105"
+                >
+                  Sign Up
+                </NavLink>
               </li>
             )}
           </ul>
         </nav>
-        </Container>
+      </Container>
     </header>
-  )
+  );
 }
 
-export default Header
+export default Header;
